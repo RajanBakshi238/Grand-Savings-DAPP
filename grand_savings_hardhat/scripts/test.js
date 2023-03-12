@@ -1,4 +1,4 @@
-// for adding the kid....
+// for random testing scripts
 
 const { getNamedAccounts, ethers } = require("hardhat");
 
