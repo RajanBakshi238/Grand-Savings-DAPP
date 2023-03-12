@@ -28,6 +28,13 @@ module.exports = {
       default: 0,
       1: 0,
     },
+    player1: {
+      default: 1,
+    },
+    player2: {
+      default: 2,
+    },
+
   },
   blockConfirmations: 10,
 };
