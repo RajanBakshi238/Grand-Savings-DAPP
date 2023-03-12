@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/CryptoKids.sol": {
+      "content": "// SPDX-License-Identifier: Unlicensed\r\n\r\npragma solidity ^0.8.7;\r\n\r\ncontract CryptoKids {\r\n    // owner DAD\r\n    address owner;\r\n\r\n    // event defined\r\n    event LogKidFundingReceived(\r\n        address addr,\r\n        uint amount,\r\n        uint contractBalance\r\n    );\r\n\r\n    constructor() {\r\n        owner = msg.sender;\r\n    }\r\n\r\n    // define KID\r\n    struct Kid {\r\n        address payable walletAddress;\r\n        string firstName;\r\n        string lastName;\r\n        uint releaseTime;\r\n        uint amount;\r\n        bool canWithdraw;\r\n    }\r\n\r\n    Kid[] public kids;\r\n\r\n    modifier onlyOwner() {\r\n        require(msg.sender == owner, \"Only the owner can add kids\");\r\n        _;\r\n    }\r\n\r\n    // add kid to contract\r\n    function addKid(\r\n        address payable walletAddress,\r\n        string memory firstName,\r\n        string memory lastName,\r\n        uint releaseTime,\r\n        uint amount,\r\n        bool canWithdraw\r\n    ) public onlyOwner {\r\n        kids.push(\r\n            Kid(\r\n                walletAddress,\r\n                firstName,\r\n                lastName,\r\n                releaseTime,\r\n                amount,\r\n                canWithdraw\r\n            )\r\n        );\r\n    }\r\n\r\n    function balanceOf() public view returns (uint) {\r\n        return address(this).balance; // Herethis refer to the current contrcat\r\n    }\r\n\r\n    // deposit funds to contract, specially to a kid's account\r\n    function deposit(address walletAddress) public payable {\r\n        addToKidsBalance(walletAddress);\r\n    }\r\n\r\n    function addToKidsBalance(address walletAddress) private {\r\n        for (uint i = 0; i < kids.length; i++) {\r\n            if (kids[i].walletAddress == walletAddress) {\r\n                kids[i].amount += msg.value;\r\n                emit LogKidFundingReceived(\r\n                    walletAddress,\r\n                    msg.value,\r\n                    balanceOf()\r\n                );\r\n            }\r\n        }\r\n        // recomended not to use loop if data is more as it is not gas efficient\r\n    }\r\n\r\n    function getIndex(address walletAddress) private view returns (uint) {\r\n        for (uint i = 0; i < kids.length; i++) {\r\n            if (kids[i].walletAddress == walletAddress) {\r\n                return i;\r\n            }\r\n        }\r\n        return 999; // not a good solution but quick fix\r\n    }\r\n\r\n    // kid checks if able to withdraw\r\n    function availableToWithdraw(address walletAddress) public returns (bool) {\r\n        uint i = getIndex(walletAddress);\r\n\r\n        require(\r\n            block.timestamp > kids[i].releaseTime,\r\n            \"You cannot withdraw yet.\"\r\n        );\r\n\r\n        // if its a time in with in next 15 minute before or after 15 minutes then no use this---> here timestamp is long so manipulation will not effect.\r\n        if (block.timestamp > kids[i].releaseTime) {\r\n            kids[i].canWithdraw = true;\r\n            return true;\r\n        } else {\r\n            return false;\r\n        }\r\n    }\r\n\r\n    // withdraw money\r\n    function withdraw(address payable walletAddress) public payable {\r\n        uint i = getIndex(walletAddress);\r\n        require(\r\n            msg.sender == kids[i].walletAddress,\r\n            \"You must be the kid to withdraw\"\r\n        );\r\n        require(\r\n            kids[i].canWithdraw == true,\r\n            \"You are not able to withdraw at this time\"\r\n        );\r\n        kids[i].walletAddress.transfer(kids[i].amount);\r\n    }\r\n\r\n    function getAllKids() public view returns(Kid[] memory){\r\n        return kids;\r\n    }\r\n\r\n}\r\n\r\n// NOTES :\r\n// msg is a global variable\r\n\r\n// epochconverter.com\r\n\r\n// learn x in y solidity.\r\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}

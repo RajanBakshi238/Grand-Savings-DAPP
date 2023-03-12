@@ -1,5 +1,7 @@
-/** @type import('hardhat/config').HardhatUserConfig */
+require("@nomicfoundation/hardhat-toolbox");
+
 require("hardhat-deploy");
+/** @type import('hardhat/config').HardhatUserConfig */
 
 const GOERLI_RPC_URL =
   "https://eth-goerli.g.alchemy.com/v2/OMIqacr1nhkHZCP3LZmyTh12dAQqy0D5";

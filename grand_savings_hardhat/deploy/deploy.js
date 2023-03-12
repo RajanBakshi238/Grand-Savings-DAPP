@@ -1,6 +1,6 @@
 const { network } = require("hardhat");
 
-module.exports = async ({ getNamedAccounts, deployments }) => {
+module.exports = async ({ getNamedAccounts, deployments, ethers }) => {
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
 
@@ -14,6 +14,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     waitConfirmations: network.config.blockConfirmations || 1,
   });
 
-  log("Fund Me Address : ", fundMe.address, network.name);
+  log("Grand Savings Address : ", fundMe.address, network.name);
+
+//   const fundMeContract = await ethers.getContract("CryptoKids", deployer)     
+
+//   log("Grand Savings Owner : ", await fundMeContract.kids);
 
 };

@@ -118,6 +118,11 @@ contract CryptoKids {
         );
         kids[i].walletAddress.transfer(kids[i].amount);
     }
+
+    function getAllKids() public view returns(Kid[] memory){
+        return kids;
+    }
+
 }
 
 // NOTES :
