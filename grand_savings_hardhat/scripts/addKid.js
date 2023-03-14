@@ -7,8 +7,8 @@ async function main() {
   const cryptoKids = await ethers.getContract("CryptoKids", deployer);
   const transactionResponse = await cryptoKids.addKid(
     "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-    "Aditi",
-    "Mehta",
+    "Sandeep",
+    "Thakur",
     "1678605951",
     // ethers.utils.parseEther("1"),
     1,
